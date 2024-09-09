@@ -1,9 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
-    //constructor(private readonly usersService: UsersService) {}
+    constructor(private readonly usersService: UsersService) {}
 
     // @Post()
     // postUsers(): string{
@@ -18,36 +18,42 @@ export class UsersController {
     //     return this.usersService.getUsersDetails();
     // }
     @Get()
-    findAllUsers() {
-        return [];
+    findAllUsers(@Query('role') role?: 'INTERN' | 'ADMIN') {
+        return this.usersService.findAllUsers(role);    
     }
 
     @Get(':id')
     findUser(@Param('id') id: string){
-        return { 
-            id,
-            message: 'Specific User'
-        };
+        return this.usersService.findUser(+id);
+        // return { 
+        //     id,
+        //     message: 'Specific User'
+        // };
     }
 
     @Post()
-    addUser(@Body() user: {}){
-        return user;
+    addUser(@Body() user: {name: string, email: string, role: 'INTERN' | 'ADMIN'}){
+        return this.usersService.addUser(user)
+        //return user;
     }
 
     @Patch(':id')
-    updateUser(@Param('id') id: string, @Body() userDetails: {}){
-        return { 
-            id,
-            ...userDetails
-        };
+    updateUser(@Param('id') id: string, @Body() userDetails: {name?: string, email?: string, role?: 'INTERN' | 'ADMIN'}){
+        return this.usersService.updateUser(+id, userDetails)
+        
+        // return { 
+        //     id,
+        //     ...userDetails
+        // };
     }
 
     @Delete(':id')
     deleteUser(@Param('id') id: string){
-        return { 
-            id,
-            message: 'delete'
-        };
+        return this.usersService.deleteUser(+id)
+        
+        // return { 
+        //     id,
+        //     message: 'delete'
+        // };
     }
 }
